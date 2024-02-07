@@ -58,9 +58,13 @@ class Classical_NeuralNetwork:
         auc_scores = []
         accuracy_scores = []
         confusion_matrices = []
+        
         accuracies = np.zeros((2, n_splits, n_iterations))
 
         for index_fold, (train_index, test_index) in enumerate(kf.split(X_pca)): 
+
+            loss_scores = []
+
             X_train, X_test = X_pca[train_index], X_pca[test_index]
             y_train, y_test = y[train_index], y[test_index]
 
@@ -82,6 +86,10 @@ class Classical_NeuralNetwork:
 
                 accuracies[0][index_fold][index_itr] = accuracy_score(y_train, predictions_train)
                 accuracies[1][index_fold][index_itr] = accuracy_score(y_test, predictions_test)
+
+                loss_scores.append(clf.loss_)
+
+
    
             
             proba = clf.predict_proba(X_test)[:, 1]
@@ -122,3 +130,5 @@ class Classical_NeuralNetwork:
 
         print("Average AUC:", np.mean(auc_scores))
         print("Average Accuracy:", np.mean(accuracy_scores))
+
+        return loss_scores

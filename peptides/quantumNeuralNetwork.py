@@ -74,8 +74,8 @@ class Quantum_NeuralNetwork:
 
         # Data embedding
         fmap_zz = ZZFeatureMap(feature_dimension = num_features, 
-                               reps = reps, 
-                               entanglement = 'linear')
+                               reps = 2, 
+                               entanglement = 'full')
         input_params = fmap_zz.parameters
         
         # Anstaz
@@ -110,7 +110,7 @@ class Quantum_NeuralNetwork:
                                 output_shape = 2,
                                 gradient = paramShiftSampGrad)
 
-        return len(ansatz_tl.parameters), sampler_qnn, var_circuit_with_meas
+        return len(ansatz_tl.parameters), sampler_qnn, var_circuit
 
 
 
@@ -130,10 +130,12 @@ class Quantum_NeuralNetwork:
 
         for index_fold , (train_index, test_index) in enumerate(kf.split(X_pca)): 
 
+            self.spsa_loss_recorder = []
+
             X_train, X_test = X_pca[train_index], X_pca[test_index]
             y_train, y_test = y[train_index], y[test_index]
 
-            len_init , sampler_qnn, var_circuit_with_meas = self.build_network(num_classes = 2,
+            len_init , sampler_qnn, var_circuit = self.build_network(num_classes = 2,
                                                         num_features = num_features,
                                                         reps = reps)
             
@@ -171,7 +173,8 @@ class Quantum_NeuralNetwork:
             plt.title("Training loss")
             plt.show()
 
-            self.spsa_loss_recorder = []
+        #return self.spsa_loss_recorder
+        #return sampler_qnn.draw('mpl', scale=0.7)
 
-            #return var_circuit_with_meas.draw('mpl', scale=0.7)
+        #return var_circuit.draw('mpl', scale=0.7)
    
